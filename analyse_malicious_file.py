@@ -14,7 +14,8 @@ from tkinter import messagebox
 import requests
 import base64 
 import json  # Import json to convert json to string
-import var_api # Import var_api.py filegi
+import var_api # Import var_api.py file 
+
 class VirusTotalApp:
     def __init__(self):
         self.apiKey = var_api.ExternalApiKey # Enter your personnal API Key
@@ -36,6 +37,8 @@ class VirusTotalApp:
         if response.status_code == 200:
             with open("result_malicious.log", "w") as F_malicious:
                 json.dump(response.json(), F_malicious, indent=4) # Convert json response to string
+
+                return response.json()  # Return the json response
         else:
             print(response.text)
 
@@ -53,22 +56,20 @@ class GUIApp:
         self.scan_button = tk.Button(self.root, text="Analyser URL", command=self.on_click)
         self.scan_button.pack(pady=10)
 
-        self.result_text = tk.Label(self.root, text="", wraplength=100)
+        self.result_text = tk.Text(self.root, wrap=tk.WORD, width=70, height=20)
         self.result_text.pack(pady=10)
 
     def on_click(self):
         urlToScan = self.url_entry.get()
 
         result = self.vTotalApp.scan_url(urlToScan)
-        self.result_text.config(text=result)        
+        self.result_text.insert(tk.END, str(result) + "\n")        
 
 ## Main function
 
 app1 = VirusTotalApp() # Create an instance of VirusTotalApp
 root = tk.Tk() # Create a tkinter window
 
-#urlToAnalyse = input("Enter the URL to analyse: ") # Enter the URL to analyse
-#app1.scan_url(urlToAnalyse) # Call the scan_url method to scan the URL
 guiApp1 = GUIApp(root, app1) # Create an instance of GUIApp
 
 root.mainloop() # Start the GUI
